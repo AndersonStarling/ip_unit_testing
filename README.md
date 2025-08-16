@@ -54,5 +54,5 @@
           - After each input stimulus, the Scoreboard compares expected (`din`) vs actual (`dout`).  
           - Results are displayed as `[SCO] PASS` or `[SCO] FAIL`.  
 
-      **Waveform view**:
+      **Flip Flop Waveform view**:
       ![alt text](image-1.png)
