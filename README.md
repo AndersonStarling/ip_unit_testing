@@ -54,3 +54,9 @@
 
       **Flip Flop Waveform view**:
       ![alt text](image-1.png)
+
+# How to execute the test bench
+  - Download Vivado Editor: https://www.xilinx.com/support/download.html
+  - On Vivado Editor, Create new project
+  - Add src file and test bench file in src and test folder to project by press Alt + A
+  - Run simulator and see results 
