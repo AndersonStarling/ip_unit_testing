@@ -33,15 +33,13 @@
 ## Project Structure
 ```
 └── 📁ip_unit_testing
-    └── 📁ip_unit_testing.srcs
-        └── 📁sim_1
-            └── 📁new
-                ├── flip_flop.sv
-                ├── test_flip_flop.sv
+    └── 📁src
+        ├── flip_flop.sv
+    └── 📁test
+        ├── test_flip_flop.sv
     ├── .gitignore
-    ├── ip_unit_testing.xpr
+    ├── image-1.png
     ├── README.md
-    └── test_flip_flop_behav.wcfg
 ```
 
 ## Waveform Description
