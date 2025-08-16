@@ -23,7 +23,7 @@
 - Learn how to build **interface-driven testbenches**.
 - Gain a foundation for **scaling verification environments** to larger designs.
 
-## Design under test(DUT) - Flip Flop IP.
+## Design under test(DUT).
 - **Flip-Flop IP** with:
   - `din` : input data
   - `dout`: output data
