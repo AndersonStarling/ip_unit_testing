@@ -44,7 +44,6 @@
     └── 📁test
         ├── test_flip_flop.sv
     ├── .gitignore
-    ├── image-1.png
     ├── README.md
 ```
 
