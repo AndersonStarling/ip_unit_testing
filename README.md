@@ -3,7 +3,7 @@
 ## Get Start
   - Download Vivado Editor: https://www.xilinx.com/support/download.html
   - On Vivado Editor, Create new project
-  - Add src file and test bench file in src and test folder to project by press Alt + A
+  - Add src file in ./src and test bench file in ./test to project by press Alt + A
   - Run simulator and see results 
 
 ## Description 
