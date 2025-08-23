@@ -9,7 +9,7 @@ module FIFO(fifo_if vif);
   // Memory array to store data
   reg [7:0] mem [15:0];
  
-  always @(posedge vif.clk)
+  always @(posedge vif.clock)
     begin
       if (vif.rst == 1'b1)
         begin
@@ -21,14 +21,14 @@ module FIFO(fifo_if vif);
       else if (vif.wr && !vif.full)
         begin
           // Write data to the FIFO if it's not full
-          mem[wptr] <= vif.din;
+          mem[wptr] <= vif.data_in;
           wptr      <= wptr + 1;
           cnt       <= cnt + 1;
         end
       else if (vif.rd && !vif.empty)
         begin
           // Read data from the FIFO if it's not empty
-          vif.dout <= mem[rptr];
+          vif.data_out <= mem[rptr];
           rptr <= rptr + 1;
           cnt  <= cnt - 1;
         end
