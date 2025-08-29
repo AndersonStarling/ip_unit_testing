@@ -36,6 +36,16 @@
   - `clk` : clock input
   - `rst` : synchronous reset
 
+- **FIFO IP** with:
+  - `clock`: clock input
+  - `rst`: synchronous reset
+  - `data_in`: input data
+  - `data_out`: output data
+  - `wr`: write enable
+  - `rd`: read enable
+  - `full`: FIFO full
+  - `empty`: FIFO empty
+
 ## Project Structure
 ```
 └── 📁ip_unit_testing
