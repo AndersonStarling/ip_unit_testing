@@ -8,7 +8,7 @@
   - **ENV (Environment)** – ties all components together, ensuring smooth communication and data flow between GEN, DRV, MON, and SCO.  
 
 ## Test architecture diagram
-![alt text](./image/test_bench_architecture.png.png)
+![alt text](./image/test_bench_architecture.png)
 
 
 
