@@ -39,12 +39,22 @@
 ## Project Structure
 ```
 └── 📁ip_unit_testing
+    └── 📁image
+        ├── FIFO.png
+        ├── FLIP_FLOP.png
     └── 📁src
+        ├── fifo.sv
         ├── flip_flop.sv
     └── 📁test
-        ├── test_flip_flop.sv
+        └── 📁test_fifo
+            ├── test_fifo.sv
+            ├── test_plan.xlsx
+        └── 📁test_flip_flop
+            ├── test_flip_flop.sv
     ├── .gitignore
+    ├── ip_unit_testing.xpr
     ├── README.md
+    └── test_flip_flop_behav.wcfg
 ```
 
 ## Waveform Description
