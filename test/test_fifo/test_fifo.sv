@@ -22,24 +22,30 @@
 
 class transaction;
     /* data test */
-    logic rd;
+    rand logic operation;
     logic wr;
-    rand logic data_in;
-    logic data_out;
+    logic rd;
+    logic [7:0] data_in;
+    logic [7:0] data_out;
     logic full;
     logic empty;
     logic clk;
     logic rst;
+    
+    constraint operation_control 
+    {
+        operation dist {1 :/ 50, 0 :/ 50};
+    }
 
     /* print data test */
     function void print_data();
-        $display("[TR] data_in = %0d", data_in);
+        $display("[TR] operation = %0d", operation);
     endfunction
 
     /* deep copy object transaction */
     function transaction clone();
         transaction clone_obj = new();
-        clone_obj.data_in = this.data_in;
+        clone_obj.operation = this.operation;
         return clone_obj;
     endfunction
 endclass
@@ -77,7 +83,7 @@ class generator;
             this.mb_gen_drv.put(trans.clone());
             this.mb_gen_sco.put(trans.clone());
             @(gen_and_sco_evt);
-            $display("[GEN] receive SCO event, continue generate testing data");
+            $display("[GEN] receive [SCO] event, continue generate testing data");
         end
         ->gen_to_env_evt;
         $display("[GEN] complete generate data test, end test");
@@ -110,17 +116,37 @@ class driver;
         $display("[DRV] reset done");
     endtask
 
+    task write();
+        @(posedge this.vif.clock);
+        this.vif.wr <= 1;
+        this.vif.rd <= 0;
+        this.vif.data_in <= $urandom_range(1, 10);
+        @(posedge this.vif.clock);
+        $display("[DRV] Write data = %0d", this.vif.data_in);
+        this.vif.wr <= 0;
+        @(posedge this.vif.clock);
+    endtask
+
+    task read();
+        $display("[DRV] Read data");
+        @(posedge this.vif.clock);
+        this.vif.wr <= 0;
+        this.vif.rd <= 1;
+        @(posedge this.vif.clock);
+        this.vif.rd <= 0;
+        @(posedge this.vif.clock);
+    endtask
+
     /* main task */
     task run();
       forever begin
           this.tr = new();
           this.mb_gen_drv.get(tr);
-          /* write to DUT */
-          this.vif.wr <= 1;
-          this.vif.data_in <= tr.data_in;
-          @(posedge vif.clock);
-          this.vif.wr <= 0;
-          @(posedge vif.clock);
+          if(tr.operation == 1) begin
+              this.write();
+          end else begin
+              this.read();
+          end 
       end
     endtask
 
@@ -145,15 +171,18 @@ class monitor;
     /* main task */
     task run();
       forever begin
-          @(posedge this.vif.clock);
-          this.vif.rd <= 1;
-          @(posedge this.vif.clock);
-          @(posedge this.vif.clock);
           this.tr = new();
+          @(posedge this.vif.clock);
+          @(posedge this.vif.clock);
+          this.tr.data_in  = this.vif.data_in;
+          this.tr.rd       = this.vif.rd;
+          this.tr.wr       = this.vif.wr;
+          this.tr.full     = this.vif.full;
+          this.tr.empty    = this.vif.empty;
+          @(posedge this.vif.clock);
           this.tr.data_out = this.vif.data_out;
           this.mb_mon_sco.put(tr);
-          $display("[MON] data_out = %0d", tr.data_out);
-          this.vif.rd = 0;  
+          $display("[MON] empty = %d, full = %d wr = %d rd = %d data_in = %d data_out = %0d", tr.empty, tr.full, tr.wr, tr.rd, tr.data_in, tr.data_out); 
       end
     endtask
 endclass
@@ -162,6 +191,11 @@ class scoreboard;
     /* class in-use */
     transaction tr_gen;
     transaction tr_ref;
+
+    /* data write to FIFO */
+    logic [7:0] data[$];
+    logic [7:0] temp_1;
+    logic [7:0] temp_2;
 
     /* mailbox gen - sco class */
     mailbox #(transaction) mb_gen_sco;
@@ -185,10 +219,24 @@ class scoreboard;
       forever begin
           this.mb_gen_sco.get(tr_gen);
           this.mb_mon_sco.get(tr_ref);
-          if(this.tr_gen.data_in == this.tr_ref.data_out)
-            $display("[SCO] PASS");
-          else
-            $display("[SCO] FAIL");
+
+          if(tr_gen.operation == 1) begin
+              $display("[SCO] PUSH sample data");
+              data.push_back(tr_ref.data_in);
+          end
+
+          if(tr_gen.operation == 0) begin
+              if(tr_ref.empty == 0) begin
+                  temp_1 = tr_ref.data_out;
+                  temp_2 = data.pop_front();
+                  if(temp_1 == temp_2) begin
+                      $display("[SCO] PASS");
+                  end else begin
+                      $display("[SCO] FAIL");
+                  end
+              end
+          end
+
           /* notice to gen class that sco class complete job */  
           ->this.gen_and_sco_evt;
           $display("[SCO] complete sco job, sent event to gen class");
