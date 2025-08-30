@@ -1,6 +1,7 @@
 # IPs Verification Testbench (SystemVerilog)
 
 ## Get Start
+  - Clone project: git clone git@github.com:AndersonStarling/ip_unit_testing.git
   - Download Vivado Editor: https://www.xilinx.com/support/download.html
   - On Vivado Editor, Create new project
   - Add src file in ./src and test bench file in ./test to project by press Alt + A
